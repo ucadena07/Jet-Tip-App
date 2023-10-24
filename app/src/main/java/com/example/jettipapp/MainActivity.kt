@@ -3,6 +3,7 @@ package com.example.jettipapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +41,7 @@ fun MyApp(content: @Composable () -> Unit) {
     JetTipAppTheme {
         // A surface container using the 'background' color from the theme
         Surface(
-            modifier = Modifier.fillMaxSize(),
+//            modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
             content()
@@ -48,7 +49,7 @@ fun MyApp(content: @Composable () -> Unit) {
     }
 }
 
-@Preview
+
 @Composable
 fun TopHeader(totalPerPerson: Double = 0.0) {
     Surface(
@@ -64,15 +65,36 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Total Per Person",
-                style = MaterialTheme.typography.headlineLarge)
-            Text(text = "$$total",
+            Text(
+                text = "Total Per Person",
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(
+                text = "$$total",
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.ExtraBold)
+                fontWeight = FontWeight.ExtraBold
+            )
         }
     }
 }
 
+@Preview
+@Composable
+fun MainContent() {
+    Surface(
+        modifier = Modifier
+            .padding(2.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+        border = BorderStroke(width = 1.dp,color= Color.LightGray)
+    ) {
+        Column {
+            Text(text = "hello")
+            Text(text = "hello")
+            Text(text = "hello")
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
