@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApp {
-                //TopHeader()
                 MainContent()
             }
         }
@@ -73,6 +72,7 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(15.dp)
             .height(150.dp)
             .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp))),
         color = Color(0xFFE9D7F7)
@@ -123,30 +123,35 @@ fun BillForm(modifier: Modifier = Modifier,
     val sliderPositionState = remember{
         mutableStateOf(0f)
     }
-    Surface(
-        modifier = modifier
-            .padding(2.dp)
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-        border = BorderStroke(width = 1.dp,color= Color.LightGray)
-    ) {
-        Column(modifier = Modifier.padding(6.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start) {
-            InputField(
-                valueState = totalBillState,
-                labelId = "Enter Bill",
-                enabled = true,
-                isSingleLine = true,
-                onAction = KeyboardActions{
+    Column(modifier = Modifier.padding(6.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start) {
+        TopHeader()
+        Surface(
+            modifier = modifier
+                .padding(2.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+            border = BorderStroke(width = 1.dp,color= Color.LightGray)
+        ) {
+            Column(modifier = Modifier.padding(6.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start) {
 
-                    if(!validState) return@KeyboardActions
-                    onValChange(totalBillState.value.trim())
-                    keyboardController?.hide()
-                }
-            )
+                InputField(
+                    valueState = totalBillState,
+                    labelId = "Enter Bill",
+                    enabled = true,
+                    isSingleLine = true,
+                    onAction = KeyboardActions{
 
-           // if(validState){
+                        if(!validState) return@KeyboardActions
+                        onValChange(totalBillState.value.trim())
+                        keyboardController?.hide()
+                    }
+                )
+
+                // if(validState){
                 Row(modifier = Modifier.padding(3.dp),
                     horizontalArrangement = Arrangement.Start) {
                     Text(
@@ -166,25 +171,28 @@ fun BillForm(modifier: Modifier = Modifier,
                         RoundIconBtn(imageVector = Icons.Default.Add, onClick = { /*TODO*/ })
                     }
                 }
-            //Tip Row
-            Row(modifier = Modifier.padding(horizontal = 3.dp, vertical = 12.dp)) {
-                Text("TIP", modifier = Modifier.align(alignment = Alignment.CenterVertically))
-                Spacer(modifier = Modifier.width(200.dp))
-                Text("$33.3", modifier = Modifier.align(alignment = Alignment.CenterVertically))
-            }
-            Column(modifier = Modifier.fillMaxWidth(),verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "33%")
-                Spacer(modifier = Modifier.height(14.dp))
-                Slider(value = sliderPositionState.value, onValueChange = {newVal ->
-                    sliderPositionState.value = newVal
-                })
-            }
-            //}else{
-               // Box(){}
+                //Tip Row
+                Row(modifier = Modifier.padding(horizontal = 3.dp, vertical = 12.dp)) {
+                    Text("TIP", modifier = Modifier.align(alignment = Alignment.CenterVertically))
+                    Spacer(modifier = Modifier.width(200.dp))
+                    Text("$33.3", modifier = Modifier.align(alignment = Alignment.CenterVertically))
+                }
+                Column(modifier = Modifier.fillMaxWidth(),verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "33%")
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Slider(value = sliderPositionState.value, onValueChange = {newVal ->
+                        sliderPositionState.value = newVal
+                    },modifier = Modifier.padding(start = 16.dp, end = 16.dp), steps = 5)
+                }
+                //}else{
+                // Box(){}
 
-            //}
+                //}
+            }
         }
     }
+
+
 }
 
 @Preview(showBackground = true)
