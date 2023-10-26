@@ -123,6 +123,10 @@ fun BillForm(modifier: Modifier = Modifier,
     val sliderPositionState = remember{
         mutableStateOf(0f)
     }
+
+    val splitByState = remember{
+        mutableStateOf(1)
+    }
     Column(modifier = Modifier.padding(6.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start) {
@@ -161,14 +165,22 @@ fun BillForm(modifier: Modifier = Modifier,
                     Spacer(modifier = Modifier.width(120.dp))
                     Row(modifier = Modifier.padding(horizontal = 3.dp),
                         horizontalArrangement = Arrangement.End) {
-                        RoundIconBtn(imageVector = Icons.Default.Remove, onClick = { /*TODO*/ })
+                        RoundIconBtn(imageVector = Icons.Default.Remove, onClick = {
+                            splitByState.value =
+                                if(splitByState.value > 1)
+                                    splitByState.value - 1
+                                else
+                                    1
+                        })
                         Text(
-                            text = "2",
+                            text = splitByState.value.toString(),
                             modifier = Modifier
                                 .align(alignment = Alignment.CenterVertically)
                                 .padding(start = 9.dp, end = 9.dp)
                         )
-                        RoundIconBtn(imageVector = Icons.Default.Add, onClick = { /*TODO*/ })
+                        RoundIconBtn(imageVector = Icons.Default.Add, onClick = {
+                            splitByState.value += 1
+                        })
                     }
                 }
                 //Tip Row
