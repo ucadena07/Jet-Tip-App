@@ -120,17 +120,27 @@ fun BillForm(modifier: Modifier = Modifier,
     }
     val keyboardController = LocalSoftwareKeyboardController.current
 
+
     val sliderPositionState = remember{
         mutableStateOf(0f)
     }
-
+    val tipPercentage = (sliderPositionState.value * 100).toInt()
     val splitByState = remember{
         mutableStateOf(1)
     }
+
+    val tipAmountState = remember{
+        mutableStateOf(0.0)
+    }
+    val totalPerPersonState = remember{
+        mutableStateOf(0.0)
+    }
+
+
     Column(modifier = Modifier.padding(6.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start) {
-        TopHeader()
+        TopHeader(totalPerPersonState.value)
         Surface(
             modifier = modifier
                 .padding(2.dp)
@@ -152,6 +162,8 @@ fun BillForm(modifier: Modifier = Modifier,
                         if(!validState) return@KeyboardActions
                         onValChange(totalBillState.value.trim())
                         keyboardController?.hide()
+                        totalPerPersonState.value =
+                            calculateTotalPerPerson(totalBillState.value.toDouble(), splitByState.value, tipPercentage)
                     }
                 )
 
@@ -171,6 +183,8 @@ fun BillForm(modifier: Modifier = Modifier,
                                     splitByState.value - 1
                                 else
                                     1
+                            totalPerPersonState.value =
+                                calculateTotalPerPerson(totalBillState.value.toDouble(), splitByState.value, tipPercentage)
                         })
                         Text(
                             text = splitByState.value.toString(),
@@ -180,6 +194,9 @@ fun BillForm(modifier: Modifier = Modifier,
                         )
                         RoundIconBtn(imageVector = Icons.Default.Add, onClick = {
                             splitByState.value += 1
+                            totalPerPersonState.value =
+                                calculateTotalPerPerson(totalBillState.value.toDouble(), splitByState.value, tipPercentage)
+
                         })
                     }
                 }
@@ -187,14 +204,19 @@ fun BillForm(modifier: Modifier = Modifier,
                 Row(modifier = Modifier.padding(horizontal = 3.dp, vertical = 12.dp)) {
                     Text("TIP", modifier = Modifier.align(alignment = Alignment.CenterVertically))
                     Spacer(modifier = Modifier.width(200.dp))
-                    Text("$33.3", modifier = Modifier.align(alignment = Alignment.CenterVertically))
+                    Text("$${tipAmountState.value}", modifier = Modifier.align(alignment = Alignment.CenterVertically))
                 }
                 Column(modifier = Modifier.fillMaxWidth(),verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "33%")
+                    Text(text = "$tipPercentage%")
                     Spacer(modifier = Modifier.height(14.dp))
                     Slider(value = sliderPositionState.value, onValueChange = {newVal ->
                         sliderPositionState.value = newVal
-                    },modifier = Modifier.padding(start = 16.dp, end = 16.dp), steps = 5)
+                        tipAmountState.value =
+                            calculateTotalTip(totalBillState.value.toDouble(), tipPercentage)
+                        totalPerPersonState.value =
+                            calculateTotalPerPerson(totalBillState.value.toDouble(), splitByState.value, tipPercentage)
+
+                    },modifier = Modifier.padding(start = 16.dp, end = 16.dp))
                 }
                 //}else{
                 // Box(){}
@@ -205,6 +227,21 @@ fun BillForm(modifier: Modifier = Modifier,
     }
 
 
+}
+
+fun calculateTotalTip(value: Double, tipPercentage: Int): Double {
+    return if(value > 1)
+        ((value * tipPercentage) / 100)
+    else
+        0.0
+}
+
+
+
+fun calculateTotalPerPerson(totalBill: Double, splitB: Int, tipPercentage: Int): Double{
+    val bill = calculateTotalTip(totalBill,tipPercentage) + totalBill
+
+    return  bill / splitB
 }
 
 @Preview(showBackground = true)
